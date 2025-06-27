@@ -1,5 +1,5 @@
 # Dockerfile
-FROM rust:1.70
+FROM rust:latest
 
 WORKDIR /app
 COPY . .

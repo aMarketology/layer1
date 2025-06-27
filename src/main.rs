@@ -547,9 +547,12 @@ async fn main() {
             // Sort by timestamp (newest first)
             user_transactions.sort_by(|a, b| b.timestamp.cmp(&a.timestamp));
             
+            // Fix: Get the length before moving the vector
+            let total_count = user_transactions.len();
+            
             warp::reply::json(&TransactionHistory {
                 transactions: user_transactions,
-                total_count: user_transactions.len(),
+                total_count,
             })
         });
     
