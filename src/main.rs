@@ -388,7 +388,7 @@ async fn main() {
     // Start connection reward processing task
     let blockchain_rewards = blockchain.clone();
     tokio::spawn(async move {
-        let mut interval = time::interval(Duration::from_secs(5)); // Check every 5 seconds
+        let mut interval = time::interval(Duration::from_secs(5));
         loop {
             interval.tick().await;
             let mut bc = blockchain_rewards.lock().unwrap();
@@ -410,6 +410,10 @@ async fn main() {
     let bc_disconnect = blockchain.clone();
     let bc_connections = blockchain.clone();
     let bc_stats = blockchain.clone();
+    let bc_wallet = blockchain.clone();
+    let bc_history = blockchain.clone();
+    let bc_info = blockchain.clone();
+    let bc_tip = blockchain.clone();
     
     // GET blockchain
     let get_blockchain = warp::path("blockchain")
@@ -504,21 +508,12 @@ async fn main() {
         .and(warp::post())
         .and(warp::body::json())
         .map(move |req: CreateWalletRequest| {
-            let mut bc = blockchain.clone().lock().unwrap();
-            
-            // Generate unique wallet address
+            let mut bc = bc_wallet.lock().unwrap();
             let wallet_address = format!("wallet_{}", req.user_id);
             
-            // Create signup bonus transaction
-            match bc.create_transaction(
-                "genesis".to_string(), 
-                wallet_address.clone(), 
-                1000.0
-            ) {
+            match bc.create_transaction("genesis".to_string(), wallet_address.clone(), 1000.0) {
                 Ok(_) => {
-                    // Mine the transaction immediately for instant credit
                     bc.mine_pending_transactions("system".to_string());
-                    
                     warp::reply::json(&WalletResponse {
                         wallet_address: wallet_address.clone(),
                         initial_balance: 1000.0,
@@ -526,10 +521,7 @@ async fn main() {
                     })
                 },
                 Err(err) => {
-                    warp::reply::json(&serde_json::json!({
-                        "success": false, 
-                        "error": err
-                    }))
+                    warp::reply::json(&serde_json::json!({"success": false, "error": err}))
                 }
             }
         });
@@ -540,7 +532,7 @@ async fn main() {
         .and(warp::path::param::<String>())
         .and(warp::get())
         .map(move |address: String| {
-            let bc = blockchain.clone().lock().unwrap();
+            let bc = bc_history.lock().unwrap();
             let mut user_transactions = Vec::new();
             
             // Collect all transactions involving this address
@@ -567,7 +559,7 @@ async fn main() {
         .and(warp::path::param::<String>())
         .and(warp::get())
         .map(move |address: String| {
-            let bc = blockchain.clone().lock().unwrap();
+            let bc = bc_info.lock().unwrap();
             let balance = bc.get_balance(&address);
             
             let mut total_sent = 0.0;
@@ -603,7 +595,7 @@ async fn main() {
         .and(warp::post())
         .and(warp::body::json())
         .map(move |req: TipRequest| {
-            let mut bc = blockchain.clone().lock().unwrap();
+            let mut bc = bc_tip.lock().unwrap();
             match bc.create_transaction(req.from_address, req.to_address, req.amount) {
                 Ok(msg) => {
                     warp::reply::json(&serde_json::json!({
@@ -615,16 +607,13 @@ async fn main() {
                     }))
                 },
                 Err(err) => {
-                    warp::reply::json(&serde_json::json!({
-                        "success": false, 
-                        "error": err
-                    }))
+                    warp::reply::json(&serde_json::json!({"success": false, "error": err}))
                 }
             }
         });
     
     let root = warp::path::end()
-        .map(|| warp::reply::html("Blockchain server is running! Open the HTML file to use the interface."));
+        .map(|| warp::reply::html("🔗 Layer1 Blockchain Server is running!"));
 
     let routes = root
         .or(get_blockchain)
@@ -641,22 +630,21 @@ async fn main() {
         .or(send_tip)
         .with(cors);
     
-    println!("🔗 Blockchain RPC Server running on http://localhost:3030");
-    println!("Endpoints:");
-    println!("  GET  /blockchain - View full blockchain");
-    println!("  POST /rpc/transaction - Create transaction");
-    println!("  POST /rpc/mine - Mine pending transactions");
+    // Railway deployment configuration
+    let port = std::env::var("PORT")
+        .unwrap_or_else(|_| "3030".to_string())
+        .parse::<u16>()
+        .expect("Invalid PORT environment variable");
+    
+    println!("🔗 Layer1 Blockchain Server starting on port {}", port);
+    println!("Endpoints available:");
+    println!("  GET  / - Health check");
+    println!("  GET  /blockchain - View blockchain");
+    println!("  POST /rpc/create-wallet - Create wallet");
     println!("  GET  /rpc/balance/{{address}} - Get balance");
-    println!("  POST /rpc/connect - Connect to network");
-    println!("  POST /rpc/disconnect - Disconnect from network");
-    println!("  GET  /rpc/connections - View active connections");
-    println!("  GET  /rpc/stats - Network statistics");
-    println!("  POST /rpc/create-wallet - Create a new wallet (signup)");
-    println!("  GET  /rpc/history/{{address}} - Get transaction history for an address");
-    println!("  GET  /rpc/wallet-info/{{address}} - Get detailed wallet info");
-    println!("  POST /rpc/tip - Send a tip transaction");
+    println!("  POST /rpc/transaction - Send transaction");
     
     warp::serve(routes)
-        .run(([127, 0, 0, 1], 3030))
+        .run(([0, 0, 0, 0], port))  // Listen on all interfaces
         .await;
 }
