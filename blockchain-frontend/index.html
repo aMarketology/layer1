@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Layer1 Blockchain Explorer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
+            color: #fff; 
+            min-height: 100vh;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .header h1 {
+            text-align: center;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #4CAF50, #45a049, #FFD700);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #888;
+            font-size: 1.1em;
+        }
+        
+        .container { 
+            max-width: 1400px; 
+            margin: 0 auto; 
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+        
+        .panel h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .balance-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .balance-card {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .balance-address {
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 5px;
+        }
+        
+        .balance-amount {
+            font-size: 1.5em;
+            color: #FFD700;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #ccc;
+            font-weight: 500;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+        
+        input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 14px;
+        }
+        
+        input[type="text"]::placeholder, input[type="number"]::placeholder {
+            color: #888;
+        }
+        
+        input[type="text"]:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-right: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .btn-mine {
+            background: linear-gradient(45deg, #FFD700, #FFA500);
+            color: #000;
+        }
+        
+        .btn-mine:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+        
+        .status {
+            margin: 15px 0;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid rgba(76, 175, 80, 0.4);
+            color: #4CAF50;
+        }
+        
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid rgba(244, 67, 54, 0.4);
+            color: #f44336;
+        }
+        
+        .status.loading {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            color: #FFD700;
+        }
+        
+        .blockchain-container {
+            grid-column: 1 / -1;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+        
+        .block {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 15px 0;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        .block-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .block-number {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+        
+        .block-miner {
+            background: rgba(76, 175, 80, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            color: #4CAF50;
+        }
+        
+        .transactions {
+            margin: 15px 0;
+        }
+        
+        .transaction {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 10px;
+            border-radius: 8px;
+            margin: 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .tx-details {
+            flex: 1;
+        }
+        
+        .tx-amount {
+            color: #FFD700;
+            font-weight: bold;
+        }
+        
+        .hash {
+            font-family: 'Courier New', monospace;
+            word-break: break-all;
+            color: #888;
+            font-size: 0.9em;
+        }
+        
+        .timestamp {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(76, 175, 80, 0.5);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(76, 175, 80, 0.7);
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+            
+            .balance-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🔗 Layer1 Blockchain</h1>
+        <div class="subtitle">Proof of Work • Mining • P2P Transactions</div>
+    </div>
+    
+    <div class="container">
+        <!-- Balances Panel -->
+        <div class="panel">
+            <h2>💰 Account Balances</h2>
+            <div id="balances" class="balance-grid">
+                <!-- Balances will be loaded here -->
+            </div>
+            <button class="btn btn-secondary" onclick="loadBalances()">🔄 Refresh Balances</button>
+        </div>
+        
+        <!-- Transaction Panel -->
+        <div class="panel">
+            <h2>💸 Send Transaction</h2>
+            <div class="form-group">
+                <label>From Address:</label>
+                <input type="text" id="fromAddress" placeholder="Enter sender address...">
+            </div>
+            <div class="form-group">
+                <label>To Address:</label>
+                <input type="text" id="toAddress" placeholder="Enter recipient address...">
+            </div>
+            <div class="form-group">
+                <label>Amount:</label>
+                <input type="number" id="amount" placeholder="0.00" step="0.01">
+            </div>
+            <button class="btn btn-primary" onclick="createTransaction()">📤 Send Transaction</button>
+            <div id="txStatus" class="status" style="display: none;"></div>
+        </div>
+        
+        <!-- Mining Panel -->
+        <div class="panel">
+            <h2>⛏️ Mining</h2>
+            <div class="form-group">
+                <label>Miner Address:</label>
+                <input type="text" id="minerAddress" placeholder="Enter miner address...">
+            </div>
+            <button class="btn btn-mine" onclick="mineBlock()">⛏️ Mine Pending Transactions</button>
+            <div id="mineStatus" class="status" style="display: none;"></div>
+        </div>
+        
+        <!-- Controls Panel -->
+        <div class="panel">
+            <h2>🔄 Controls</h2>
+            <button class="btn btn-primary" onclick="loadBlockchain()">🔄 Refresh Blockchain</button>
+            <button class="btn btn-secondary" onclick="loadBalances()">💰 Refresh Balances</button>
+            <div id="generalStatus" class="status" style="display: none;"></div>
+        </div>
+        
+        <!-- Connection Panel -->
+        <div class="panel">
+            <h2>🔗 Network Connection</h2>
+            <div class="form-group">
+                <label>Your Address:</label>
+                <input type="text" id="connectAddress" placeholder="Enter your address...">
+            </div>
+            <button class="btn btn-primary" onclick="connectToNetwork()">🔗 Connect to Network</button>
+            <button class="btn btn-secondary" onclick="disconnectFromNetwork()">❌ Disconnect</button>
+            <div id="connectionStatus" class="status" style="display: none;"></div>
+            
+            <div style="margin-top: 20px;">
+                <h3 style="color: #4CAF50; margin-bottom: 10px;">📊 Network Stats</h3>
+                <div id="networkStats">
+                    <!-- Network stats will be loaded here -->
+                </div>
+            </div>
+        </div>
+        
+        <!-- Add this new panel for Active Connections -->
+        <div class="panel">
+            <h2>👥 Active Connections</h2>
+            <div id="activeConnections">
+                <!-- Active connections will be loaded here -->
+            </div>
+            <button class="btn btn-secondary" onclick="loadConnections()">🔄 Refresh Connections</button>
+        </div>
+        
+        <!-- Blockchain Display -->
+        <div class="panel blockchain-container">
+            <h2>📦 Blockchain</h2>
+            <div id="blockchain">
+                <!-- Blocks will be loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:3030';
+        const knownAddresses = ['alice', 'bob', 'charlie', 'miner1', 'miner2'];
+        
+        // Load balances for known addresses
+        async function loadBalances() {
+            const balancesDiv = document.getElementById('balances');
+            balancesDiv.innerHTML = '<div class="loading">Loading balances...</div>';
+            
+            try {
+                const balancePromises = knownAddresses.map(async (address) => {
+                    const response = await fetch(`${API_BASE}/rpc/balance/${address}`);
+                    return await response.json();
+                });
+                
+                const balances = await Promise.all(balancePromises);
+                
+                balancesDiv.innerHTML = '';
+                balances.forEach(balance => {
+                    if (balance.balance > 0 || knownAddresses.includes(balance.address)) {
+                        const balanceCard = document.createElement('div');
+                        balanceCard.className = 'balance-card';
+                        balanceCard.innerHTML = `
+                            <div class="balance-address">${balance.address}</div>
+                            <div class="balance-amount">${balance.balance.toFixed(2)} L1</div>
+                        `;
+                        balancesDiv.appendChild(balanceCard);
+                    }
+                });
+            } catch (error) {
+                balancesDiv.innerHTML = `<div style="color: #f44336;">Error loading balances: ${error.message}</div>`;
+            }
+        }
+        
+        // Load blockchain
+        async function loadBlockchain() {
+            const status = document.getElementById('generalStatus');
+            const blockchain = document.getElementById('blockchain');
+            
+            showStatus('generalStatus', 'Loading blockchain...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/blockchain`);
+                const blocks = await response.json();
+                
+                blockchain.innerHTML = '';
+                showStatus('generalStatus', `✅ Loaded ${blocks.length} blocks`, 'success');
+                
+                blocks.forEach(block => {
+                    const blockDiv = document.createElement('div');
+                    blockDiv.className = 'block';
+                    
+                    let transactionsHtml = '';
+                    if (block.transactions && block.transactions.length > 0) {
+                        transactionsHtml = `
+                            <div class="transactions">
+                                <strong>Transactions:</strong>
+                                ${block.transactions.map(tx => `
+                                    <div class="transaction">
+                                        <div class="tx-details">
+                                            <strong>${tx.from}</strong> → <strong>${tx.to}</strong>
+                                        </div>
+                                        <div class="tx-amount">${tx.amount} L1</div>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        `;
+                    }
+                    
+                    blockDiv.innerHTML = `
+                        <div class="block-header">
+                            <div class="block-number">Block #${block.index}</div>
+                            <div class="block-miner">⛏️ ${block.miner}</div>
+                        </div>
+                        ${transactionsHtml}
+                        <div><strong>Hash:</strong> <span class="hash">${block.hash}</span></div>
+                        <div><strong>Previous Hash:</strong> <span class="hash">${block.previous_hash}</span></div>
+                        <div><strong>Nonce:</strong> ${block.nonce}</div>
+                        <div class="timestamp">⏰ ${new Date(block.timestamp * 1000).toLocaleString()}</div>
+                    `;
+                    blockchain.appendChild(blockDiv);
+                });
+                
+                // Refresh balances after loading blockchain
+                loadBalances();
+            } catch (error) {
+                showStatus('generalStatus', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Create transaction
+        async function createTransaction() {
+            const from = document.getElementById('fromAddress').value.trim();
+            const to = document.getElementById('toAddress').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+            
+            if (!from || !to || !amount) {
+                showStatus('txStatus', 'Please fill in all fields', 'error');
+                return;
+            }
+            
+            showStatus('txStatus', 'Creating transaction...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/rpc/transaction`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ from, to, amount })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('txStatus', '✅ Transaction created! Mine a block to confirm.', 'success');
+                    document.getElementById('fromAddress').value = '';
+                    document.getElementById('toAddress').value = '';
+                    document.getElementById('amount').value = '';
+                } else {
+                    showStatus('txStatus', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('txStatus', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Mine block
+        async function mineBlock() {
+            const minerAddress = document.getElementById('minerAddress').value.trim();
+            
+            if (!minerAddress) {
+                showStatus('mineStatus', 'Please enter miner address', 'error');
+                return;
+            }
+            
+            showStatus('mineStatus', '⛏️ Mining block...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/rpc/mine`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ miner_address: minerAddress })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('mineStatus', '✅ Block mined successfully!', 'success');
+                    document.getElementById('minerAddress').value = '';
+                    setTimeout(() => {
+                        loadBlockchain();
+                    }, 1000);
+                } else {
+                    showStatus('mineStatus', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('mineStatus', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Connect to network
+        async function connectToNetwork() {
+            const address = document.getElementById('connectAddress').value.trim();
+            
+            if (!address) {
+                showStatus('connectionStatus', 'Please enter your address', 'error');
+                return;
+            }
+            
+            showStatus('connectionStatus', 'Connecting to network...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/rpc/connect`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('connectionStatus', `✅ ${result.message}`, 'success');
+                    setTimeout(() => {
+                        loadConnections();
+                        loadNetworkStats();
+                    }, 1000);
+                } else {
+                    showStatus('connectionStatus', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('connectionStatus', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Disconnect from network
+        async function disconnectFromNetwork() {
+            const address = document.getElementById('connectAddress').value.trim();
+            
+            if (!address) {
+                showStatus('connectionStatus', 'Please enter your address', 'error');
+                return;
+            }
+            
+            showStatus('connectionStatus', 'Disconnecting...', 'loading');
+            
+            try {
+                const response = await fetch(`${API_BASE}/rpc/disconnect`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address })
+                });
+                
+                const result = await response.json();
+                
+                if (result.success) {
+                    showStatus('connectionStatus', `✅ ${result.message}`, 'success');
+                    document.getElementById('connectAddress').value = '';
+                    setTimeout(() => {
+                        loadConnections();
+                        loadNetworkStats();
+                    }, 1000);
+                } else {
+                    showStatus('connectionStatus', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('connectionStatus', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Load active connections
+        async function loadConnections() {
+            const connectionsDiv = document.getElementById('activeConnections');
+            connectionsDiv.innerHTML = '<div class="loading">Loading connections...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/rpc/connections`);
+                const connections = await response.json();
+                
+                connectionsDiv.innerHTML = '';
+                
+                if (connections.length === 0) {
+                    connectionsDiv.innerHTML = '<div style="color: #888;">No active connections</div>';
+                    return;
+                }
+                
+                connections.forEach(conn => {
+                    const connDiv = document.createElement('div');
+                    connDiv.className = 'balance-card';
+                    const connectedTime = Math.floor((Date.now() / 1000) - conn.connected_at);
+                    connDiv.innerHTML = `
+                        <div class="balance-address">${conn.address}</div>
+                        <div style="color: #FFD700; font-size: 0.9em;">
+                            Connected: ${Math.floor(connectedTime / 60)}m ${connectedTime % 60}s
+                        </div>
+                        <div style="color: #4CAF50; font-size: 0.9em;">
+                            Rewards: ${conn.total_rewards.toFixed(4)} L1
+                        </div>
+                    `;
+                    connectionsDiv.appendChild(connDiv);
+                });
+            } catch (error) {
+                connectionsDiv.innerHTML = `<div style="color: #f44336;">Error loading connections: ${error.message}</div>`;
+            }
+        }
+        
+        // Load network stats
+        async function loadNetworkStats() {
+            const statsDiv = document.getElementById('networkStats');
+            
+            try {
+                const response = await fetch(`${API_BASE}/rpc/stats`);
+                const stats = await response.json();
+                
+                statsDiv.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em;">
+                        <div>Total Supply: <span style="color: #FFD700;">${stats.total_supply.toLocaleString()}</span></div>
+                        <div>Circulating: <span style="color: #4CAF50;">${stats.circulating_supply.toFixed(2)}</span></div>
+                        <div>Remaining: <span style="color: #888;">${stats.remaining_supply.toFixed(0)}</span></div>
+                        <div>Current Reward: <span style="color: #FFD700;">${stats.current_reward_rate.toFixed(4)} L1/min</span></div>
+                        <div>Active Users: <span style="color: #4CAF50;">${stats.active_connections}</span></div>
+                        <div>Total Blocks: <span style="color: #4CAF50;">${stats.total_blocks}</span></div>
+                    </div>
+                `;
+            } catch (error) {
+                statsDiv.innerHTML = `<div style="color: #f44336;">Error loading stats</div>`;
+            }
+        }
+        
+        // Helper function to show status messages
+        function showStatus(elementId, message, type) {
+            const statusDiv = document.getElementById(elementId);
+            statusDiv.className = `status ${type}`;
+            statusDiv.innerHTML = message;
+            statusDiv.style.display = 'block';
+            
+            if (type === 'success') {
+                setTimeout(() => {
+                    statusDiv.style.display = 'none';
+                }, 3000);
+            }
+        }
+        
+        // Load data on page load
+        loadBlockchain();
+        loadBalances();
+        loadConnections();
+        loadNetworkStats();
+        
+        // Auto-refresh connections and stats every 10 seconds
+        setInterval(() => {
+            loadConnections();
+            loadNetworkStats();
+        }, 10000);
+    </script>
+</body>
+</html>
