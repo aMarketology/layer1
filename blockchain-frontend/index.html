@@ -3,128 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Layer1 Blockchain Explorer</title>
+    <title>Layer1 Blockchain Dashboard</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 100%);
-            color: #fff; 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #000000 0%, #070054 100%); /* Changed to green gradient */
             min-height: 100vh;
-        }
-        
-        .header {
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
-            padding: 20px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .header h1 {
-            text-align: center;
-            font-size: 2.5em;
-            background: linear-gradient(45deg, #4CAF50, #45a049, #FFD700);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
-        }
-        
-        .subtitle {
-            text-align: center;
-            color: #888;
-            font-size: 1.1em;
-        }
-        
-        .container { 
-            max-width: 1400px; 
-            margin: 0 auto; 
+            color: white;
             padding: 20px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
         }
-        
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
         .panel {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
             border-radius: 15px;
             padding: 25px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
         }
-        
+
         .panel h2 {
-            color: #4CAF50;
             margin-bottom: 20px;
+            color: #ffffff;
             font-size: 1.5em;
+        }
+
+        .tabs {
             display: flex;
-            align-items: center;
             gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            overflow-x: auto;
         }
-        
-        .balance-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 15px;
+
+        .tab {
+            padding: 10px 20px;
+            border-radius: 8px 8px 0 0;
+            cursor: pointer;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-bottom: none;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .tab.active {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+            color: #f9f9f9;
+            font-weight: bold;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
             margin-bottom: 20px;
         }
-        
-        .balance-card {
-            background: rgba(76, 175, 80, 0.1);
-            border: 1px solid rgba(76, 175, 80, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            text-align: center;
-        }
-        
-        .balance-address {
-            font-weight: bold;
-            color: #4CAF50;
-            margin-bottom: 5px;
-        }
-        
-        .balance-amount {
-            font-size: 1.5em;
-            color: #FFD700;
-        }
-        
-        .form-group {
-            margin-bottom: 15px;
-        }
-        
+
         .form-group label {
             display: block;
-            margin-bottom: 5px;
-            color: #ccc;
-            font-weight: 500;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #e8e8e8;
         }
-        
-        .form-row {
-            display: flex;
-            gap: 10px;
-        }
-        
-        input[type="text"], input[type="number"] {
+
+        input[type="text"], input[type="number"], textarea {
             width: 100%;
             padding: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 8px;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
+            background: rgba(255, 255, 255, 0.1);
+            color: rgb(250, 250, 250);
             font-size: 14px;
+            backdrop-filter: blur(5px);
+        }
+
+        textarea {
+            min-height: 80px;
+            resize: vertical;
         }
         
-        input[type="text"]::placeholder, input[type="number"]::placeholder {
+        input[type="text"]::placeholder, input[type="number"]::placeholder, textarea::placeholder {
             color: #888;
         }
         
-        input[type="text"]:focus, input[type="number"]:focus {
+        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
             outline: none;
             border-color: #4CAF50;
             box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
         }
-        
+
         .btn {
             padding: 12px 20px;
             border: none;
@@ -132,514 +129,1293 @@
             cursor: pointer;
             font-size: 14px;
             font-weight: 500;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            display: inline-block;
+            text-decoration: none;
             margin-right: 10px;
+            margin-bottom: 10px;
         }
-        
+
         .btn-primary {
             background: linear-gradient(45deg, #4CAF50, #45a049);
             color: white;
         }
-        
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
-        }
-        
+
         .btn-secondary {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: linear-gradient(45deg, #2196F3, #1976D2);
+            color: white;
         }
-        
-        .btn-mine {
-            background: linear-gradient(45deg, #FFD700, #FFA500);
-            color: #000;
+
+        .btn-warning {
+            background: linear-gradient(45deg, #FF9800, #F57C00);
+            color: white;
         }
-        
-        .btn-mine:hover {
+
+        .btn-danger {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
+        }
+
+        .btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        
-        .status {
-            margin: 15px 0;
-            padding: 10px;
-            border-radius: 8px;
+
+        .balance-card {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             text-align: center;
+            backdrop-filter: blur(5px);
         }
-        
-        .status.success {
-            background: rgba(76, 175, 80, 0.2);
-            border: 1px solid rgba(76, 175, 80, 0.4);
-            color: #4CAF50;
-        }
-        
-        .status.error {
-            background: rgba(244, 67, 54, 0.2);
-            border: 1px solid rgba(244, 67, 54, 0.4);
-            color: #f44336;
-        }
-        
-        .status.loading {
-            background: rgba(255, 215, 0, 0.2);
-            border: 1px solid rgba(255, 215, 0, 0.4);
+
+        .balance-amount {
+            font-size: 1.2em;
+            font-weight: bold;
             color: #FFD700;
         }
-        
-        .blockchain-container {
-            grid-column: 1 / -1;
-            max-height: 600px;
-            overflow-y: auto;
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-weight: bold;
         }
-        
-        .block {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin: 15px 0;
+
+        .status.success {
+            background: rgba(76, 175, 80, 0.2);
+            border: 1px solid #4CAF50;
+            color: #4CAF50;
+        }
+
+        .status.error {
+            background: rgba(244, 67, 54, 0.2);
+            border: 1px solid #f44336;
+            color: #f44336;
+        }
+
+        .status.loading {
+            background: rgba(33, 150, 243, 0.2);
+            border: 1px solid #2196F3;
+            color: #2196F3;
+        }
+
+        .loading {
+            text-align: center;
+            color: #888;
+            font-style: italic;
             padding: 20px;
-            border-radius: 12px;
+        }
+
+        .transaction-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
             border-left: 4px solid #4CAF50;
         }
-        
-        .block-header {
+
+        .username-display {
+            color: #1E90FF;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .address-display {
+            font-family: monospace;
+            font-size: 0.9em;
+            color: #888;
+            word-break: break-all;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .grid-2, .grid-3 {
+                grid-template-columns: 1fr;
+            }
+            
+            .tabs {
+                flex-direction: column;
+            }
+            
+            .tab {
+                border-radius: 8px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+            }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #FFD700;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        /* Enhanced Transaction Styles */
+        .enhanced-tx-form {
+            background: rgba(76, 175, 80, 0.1);
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 15px;
+        }
+
+        .security-badge {
+            display: inline-block;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        /* Token Launch Styles */
+        .token-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .token-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .token-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
-        
-        .block-number {
-            font-size: 1.2em;
+
+        .token-symbol {
+            font-size: 1.3em;
             font-weight: bold;
-            color: #4CAF50;
-        }
-        
-        .block-miner {
-            background: rgba(76, 175, 80, 0.2);
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 0.9em;
-            color: #4CAF50;
-        }
-        
-        .transactions {
-            margin: 15px 0;
-        }
-        
-        .transaction {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 10px;
-            border-radius: 8px;
-            margin: 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .tx-details {
-            flex: 1;
-        }
-        
-        .tx-amount {
             color: #FFD700;
+        }
+
+        .token-name {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        .token-status {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
             font-weight: bold;
         }
-        
-        .hash {
-            font-family: 'Courier New', monospace;
-            word-break: break-all;
+
+        .status-launching {
+            background: rgba(255, 193, 7, 0.2);
+            color: #FFC107;
+            border: 1px solid #FFC107;
+        }
+
+        .status-trading {
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            border: 1px solid #4CAF50;
+        }
+
+        .status-graduated {
+            background: rgba(156, 39, 176, 0.2);
+            color: #9C27B0;
+            border: 1px solid #9C27B0;
+        }
+
+        .token-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .token-stat {
+            text-align: center;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+        }
+
+        .token-stat-value {
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .token-stat-label {
+            font-size: 0.8em;
             color: #888;
+        }
+
+        .token-creator {
+            color: #1E90FF;
             font-size: 0.9em;
         }
-        
-        .timestamp {
-            color: #666;
-            font-size: 0.9em;
+
+        .trading-interface {
+            background: rgba(76, 175, 80, 0.05);
+            border: 1px solid rgba(76, 175, 80, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
         }
-        
-        /* Scrollbar styling */
-        ::-webkit-scrollbar {
-            width: 8px;
+
+        .trading-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
         }
-        
-        ::-webkit-scrollbar-track {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
+
+        .btn-buy {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
         }
-        
-        ::-webkit-scrollbar-thumb {
-            background: rgba(76, 175, 80, 0.5);
-            border-radius: 10px;
+
+        .btn-sell {
+            background: linear-gradient(45deg, #f44336, #d32f2f);
+            color: white;
         }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            background: rgba(76, 175, 80, 0.7);
+
+        .portfolio-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #4CAF50;
         }
-        
-        @media (max-width: 768px) {
-            .container {
-                grid-template-columns: 1fr;
-                padding: 10px;
-            }
-            
-            .form-row {
-                flex-direction: column;
-            }
-            
-            .balance-grid {
-                grid-template-columns: 1fr;
-            }
+
+        .pnl-positive {
+            color: #4CAF50;
+        }
+
+        .pnl-negative {
+            color: #f44336;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>🔗 Layer1 Blockchain</h1>
-        <div class="subtitle">Proof of Work • Mining • P2P Transactions</div>
-    </div>
-    
     <div class="container">
-        <!-- Balances Panel -->
+        <h1>🔗 Layer1 Blockchain Dashboard</h1>
+
+        <!-- Username System Panel -->
         <div class="panel">
-            <h2>💰 Account Balances</h2>
-            <div id="balances" class="balance-grid">
-                <!-- Balances will be loaded here -->
+            <h2>👤 Username System</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('register-username', this)">Create Account</div>
+                <div class="tab" onclick="switchTab('my-wallet', this)">My Wallet</div>
+                <div class="tab" onclick="switchTab('all-usernames', this)">All Users</div>
             </div>
-            <button class="btn btn-secondary" onclick="loadBalances()">🔄 Refresh Balances</button>
-        </div>
-        
-        <!-- Transaction Panel -->
-        <div class="panel">
-            <h2>💸 Send Transaction</h2>
-            <div class="form-group">
-                <label>From Address:</label>
-                <input type="text" id="fromAddress" placeholder="Enter sender address...">
-            </div>
-            <div class="form-group">
-                <label>To Address:</label>
-                <input type="text" id="toAddress" placeholder="Enter recipient address...">
-            </div>
-            <div class="form-group">
-                <label>Amount:</label>
-                <input type="number" id="amount" placeholder="0.00" step="0.01">
-            </div>
-            <button class="btn btn-primary" onclick="createTransaction()">📤 Send Transaction</button>
-            <div id="txStatus" class="status" style="display: none;"></div>
-        </div>
-        
-        <!-- Mining Panel -->
-        <div class="panel">
-            <h2>⛏️ Mining</h2>
-            <div class="form-group">
-                <label>Miner Address:</label>
-                <input type="text" id="minerAddress" placeholder="Enter miner address...">
-            </div>
-            <button class="btn btn-mine" onclick="mineBlock()">⛏️ Mine Pending Transactions</button>
-            <div id="mineStatus" class="status" style="display: none;"></div>
-        </div>
-        
-        <!-- Controls Panel -->
-        <div class="panel">
-            <h2>🔄 Controls</h2>
-            <button class="btn btn-primary" onclick="loadBlockchain()">🔄 Refresh Blockchain</button>
-            <button class="btn btn-secondary" onclick="loadBalances()">💰 Refresh Balances</button>
-            <div id="generalStatus" class="status" style="display: none;"></div>
-        </div>
-        
-        <!-- Connection Panel -->
-        <div class="panel">
-            <h2>🔗 Network Connection</h2>
-            <div class="form-group">
-                <label>Your Address:</label>
-                <input type="text" id="connectAddress" placeholder="Enter your address...">
-            </div>
-            <button class="btn btn-primary" onclick="connectToNetwork()">🔗 Connect to Network</button>
-            <button class="btn btn-secondary" onclick="disconnectFromNetwork()">❌ Disconnect</button>
-            <div id="connectionStatus" class="status" style="display: none;"></div>
-            
-            <div style="margin-top: 20px;">
-                <h3 style="color: #4CAF50; margin-bottom: 10px;">📊 Network Stats</h3>
-                <div id="networkStats">
-                    <!-- Network stats will be loaded here -->
+
+            <!-- Create Account Tab -->
+            <div id="register-username" class="tab-content active">
+                <div class="form-group">
+                    <label>Choose Username:</label>
+                    <input type="text" id="newUsername" placeholder="Enter desired username (3-20 chars)...">
+                    <div style="color: #888; font-size: 0.9em; margin-top: 5px;">
+                        ℹ️ A wallet address will be automatically generated for your username
+                    </div>
+                </div>
+                <button class="btn btn-primary" onclick="registerUsername()">🎉 Create Account</button>
+                <div style="margin-top: 15px; padding: 10px; background: rgba(76, 175, 80, 0.1); border-radius: 8px; border: 1px solid rgba(76, 175, 80, 0.3);">
+                    <strong style="color: #4CAF50;">🎁 Signup Bonus:</strong><br>
+                    <span style="color: #FFD700;">New accounts receive 1000 L1 tokens for free!</span>
                 </div>
             </div>
+
+            <!-- My Wallet Tab -->
+            <div id="my-wallet" class="tab-content">
+                <div class="form-group">
+                    <label>Your Username:</label>
+                    <input type="text" id="myUsername" placeholder="Enter your username...">
+                </div>
+                <button class="btn btn-secondary" onclick="loadMyWallet()">💰 Load My Wallet</button>
+                <div id="myWalletInfo" style="margin-top: 15px;">
+                    <!-- Wallet info will be displayed here -->
+                </div>
+            </div>
+
+            <!-- All Users Tab -->
+            <div id="all-usernames" class="tab-content">
+                <div id="allUsernamesList">
+                    <!-- Usernames will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadAllUsernames()">🔄 Refresh</button>
+            </div>
+
+            <div id="usernameStatus" class="status" style="display: none;"></div>
         </div>
-        
-        <!-- Add this new panel for Active Connections -->
+
+        <!-- Transaction Management Panel -->
         <div class="panel">
-            <h2>👥 Active Connections</h2>
-            <div id="activeConnections">
-                <!-- Active connections will be loaded here -->
+            <h2>💸 Transaction Management</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('send-tx', this)">Send Transaction</div>
+                <div class="tab" onclick="switchTab('enhanced-tx', this)">Enhanced Transaction <span class="security-badge">🔒 Secure</span></div>
+                <div class="tab" onclick="switchTab('tx-history', this)">Transaction History</div>
             </div>
-            <button class="btn btn-secondary" onclick="loadConnections()">🔄 Refresh Connections</button>
+
+            <!-- Send Transaction Tab -->
+            <div id="send-tx" class="tab-content active">
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>From (Username or Address):</label>
+                        <input type="text" id="fromAddress" placeholder="Enter username (e.g., alice) or wallet address">
+                    </div>
+                    <div class="form-group">
+                        <label>To (Username or Address):</label>
+                        <input type="text" id="toAddress" placeholder="Enter username (e.g., bob) or wallet address">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Amount (L1):</label>
+                    <input type="number" id="amount" step="0.01" placeholder="Enter amount...">
+                </div>
+                <button class="btn btn-primary" onclick="createTransaction()">💸 Send Transaction</button>
+            </div>
+
+            <!-- Enhanced Transaction Tab -->
+            <div id="enhanced-tx" class="tab-content">
+                <div class="enhanced-tx-form">
+                    <h3 style="color: #4CAF50; margin-bottom: 15px;">🔒 Enhanced Secure Transaction</h3>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>From (Username or Address):</label>
+                            <input type="text" id="enhancedFromAddress" placeholder="Enter username (e.g., alice) or wallet address">
+                        </div>
+                        <div class="form-group">
+                            <label>To (Username or Address):</label>
+                            <input type="text" id="enhancedToAddress" placeholder="Enter username (e.g., bob) or wallet address">
+                        </div>
+                    </div>
+                    <div class="grid-2">
+                        <div class="form-group">
+                            <label>Amount (L1):</label>
+                            <input type="number" id="enhancedAmount" step="0.01" placeholder="Enter amount...">
+                        </div>
+                        <div class="form-group">
+                            <label>Transaction Fee (L1):</label>
+                            <input type="number" id="enhancedFee" step="0.001" value="0.01" placeholder="Enter fee...">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Message (Optional):</label>
+                        <textarea id="enhancedMessage" placeholder="Enter optional message..."></textarea>
+                    </div>
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(33, 150, 243, 0.1); border-radius: 6px; border: 1px solid rgba(33, 150, 243, 0.3); font-size: 0.9em;">
+                        🔒 <strong>Security Features:</strong> Rate limiting, duplicate prevention, automatic validation
+                    </div>
+                    <button class="btn btn-primary" onclick="createEnhancedTransaction()">🚀 Send Enhanced Transaction</button>
+                </div>
+            </div>
+
+            <!-- Transaction History Tab -->
+            <div id="tx-history" class="tab-content">
+                <div class="form-group">
+                    <label>Username or Address:</label>
+                    <input type="text" id="historyAddress" placeholder="Enter username or wallet address...">
+                </div>
+                <button class="btn btn-secondary" onclick="loadTransactionHistoryWithLabels()">📋 Load History</button>
+                <div id="transactionHistory" style="margin-top: 20px;">
+                    <!-- Transaction history will be displayed here -->
+                </div>
+            </div>
+
+            <div id="transactionStatus" class="status" style="display: none;"></div>
         </div>
-        
-        <!-- Blockchain Display -->
-        <div class="panel blockchain-container">
-            <h2>📦 Blockchain</h2>
-            <div id="blockchain">
-                <!-- Blocks will be loaded here -->
+
+        <!-- Network Status Panel -->
+        <div class="panel">
+            <h2>📊 Network Status</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('stats', this)">Network Stats</div>
+                <div class="tab" onclick="switchTab('balances', this)">All Balances</div>
+                <div class="tab" onclick="switchTab('connections', this)">Active Connections</div>
+                <div class="tab" onclick="switchTab('security-stats', this)">Security Stats</div>
+                <div class="tab" onclick="switchTab('pool-stats', this)">Pool Stats</div>
             </div>
+
+            <!-- Network Stats Tab -->
+            <div id="stats" class="tab-content active">
+                <div id="networkStats" class="stats-grid">
+                    <!-- Network stats will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadNetworkStats()">🔄 Refresh Stats</button>
+            </div>
+
+            <!-- Balances Tab -->
+            <div id="balances" class="tab-content">
+                <div id="balancesList">
+                    <!-- Balances will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadBalances()">🔄 Refresh Balances</button>
+            </div>
+
+            <!-- Connections Tab -->
+            <div id="connections" class="tab-content">
+                <div class="form-group">
+                    <label>Your Address:</label>
+                    <input type="text" id="connectionAddress" placeholder="Enter your address...">
+                </div>
+                <button class="btn btn-primary" onclick="connectToNetwork()">🔗 Connect</button>
+                <button class="btn btn-danger" onclick="disconnectFromNetwork()">❌ Disconnect</button>
+                <div id="connectionsList" style="margin-top: 20px;">
+                    <!-- Connections will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadConnections()">🔄 Refresh Connections</button>
+            </div>
+
+            <!-- Security Stats Tab -->
+            <div id="security-stats" class="tab-content">
+                <div id="securityStatsList">
+                    <!-- Security stats will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadSecurityStats()">🔄 Refresh Security Stats</button>
+            </div>
+
+            <!-- Pool Stats Tab -->
+            <div id="pool-stats" class="tab-content">
+                <div id="poolStatsList">
+                    <!-- Pool stats will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadPoolStats()">🔄 Refresh Pool Stats</button>
+            </div>
+
+            <div id="networkStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <!-- Mining Panel -->
+        <div class="panel">
+            <h2>⛏️ Mining Operations</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('mining', this)">Mine Block</div>
+                <div class="tab" onclick="switchTab('enhanced-mining', this)">Enhanced Mining <span class="security-badge">🔒 Secure</span></div>
+            </div>
+
+            <!-- Regular Mining Tab -->
+            <div id="mining" class="tab-content active">
+                <div class="form-group">
+                    <label>Miner Address:</label>
+                    <input type="text" id="minerAddress" placeholder="Enter miner address...">
+                </div>
+                <button class="btn btn-warning" onclick="mineBlock()">⛏️ Mine Block</button>
+            </div>
+
+            <!-- Enhanced Mining Tab -->
+            <div id="enhanced-mining" class="tab-content">
+                <div class="enhanced-tx-form">
+                    <h3 style="color: #4CAF50; margin-bottom: 15px;">🔒 Enhanced Secure Mining</h3>
+                    <div class="form-group">
+                        <label>Miner Address or Username:</label>
+                        <input type="text" id="enhancedMinerAddress" placeholder="Enter miner address or username...">
+                    </div>
+                    <div style="margin-bottom: 15px; padding: 10px; background: rgba(255, 193, 7, 0.1); border-radius: 6px; border: 1px solid rgba(255, 193, 7, 0.3); font-size: 0.9em;">
+                        ⛏️ <strong>Enhanced Mining:</strong> Includes transaction fees + security validation + priority processing
+                    </div>
+                    <button class="btn btn-warning" onclick="mineEnhancedBlock()">🚀 Mine Enhanced Block</button>
+                </div>
+            </div>
+
+            <div id="miningStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <!-- Token Launch & Trading Panel -->
+        <div class="panel">
+            <h2>🚀 Token Launch & Trading</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('launch-token', this)">Launch Token</div>
+                <div class="tab" onclick="switchTab('all-tokens', this)">All Tokens</div>
+                <div class="tab" onclick="switchTab('trending-tokens', this)">Trending</div>
+                <div class="tab" onclick="switchTab('my-portfolio', this)">My Portfolio</div>
+                <div class="tab" onclick="switchTab('token-trading', this)">Trade Tokens</div>
+            </div>
+
+            <!-- Launch Token Tab -->
+            <div id="launch-token" class="tab-content active">
+                <div style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                    <h3 style="color: #FFC107; margin-bottom: 10px;">🚀 Launch Your Memecoin</h3>
+                    <p style="color: #ccc; font-size: 0.9em;">Create and launch your own token on Layer1! Launch fee: 10 L1</p>
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Token Symbol (2-10 chars):</label>
+                        <input type="text" id="tokenSymbol" placeholder="e.g., PEPE, DOGE, MOON" maxlength="10">
+                    </div>
+                    <div class="form-group">
+                        <label>Token Name:</label>
+                        <input type="text" id="tokenName" placeholder="e.g., PepeCoin, DogeMoon" maxlength="50">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Description:</label>
+                    <textarea id="tokenDescription" placeholder="Describe your token, its purpose, memes, etc..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Creator (Username or Address):</label>
+                    <input type="text" id="tokenCreator" placeholder="Enter your username or wallet address">
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Total Supply:</label>
+                        <input type="number" id="tokenSupply" placeholder="e.g., 1000000000" min="1000000" max="1000000000000">
+                    </div>
+                    <div class="form-group">
+                        <label>Initial Price (L1):</label>
+                        <input type="number" id="tokenPrice" step="0.00001" placeholder="e.g., 0.001" min="0.00001">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Initial Liquidity (L1):</label>
+                    <input type="number" id="tokenLiquidity" step="0.01" placeholder="e.g., 100" min="100">
+                </div>
+
+                <div class="grid-2">
+                    <div class="form-group">
+                        <label>Website (Optional):</label>
+                        <input type="text" id="tokenWebsite" placeholder="https://yourtoken.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Twitter (Optional):</label>
+                        <input type="text" id="tokenTwitter" placeholder="@yourtoken">
+                    </div>
+                </div>
+
+                <div style="background: rgba(33, 150, 243, 0.1); border-radius: 6px; padding: 10px; margin: 15px 0; font-size: 0.9em;">
+                    💡 <strong>How it works:</strong> 80% of supply goes to liquidity pool, 20% to creator. Launch fee: 10 L1
+                </div>
+
+                <button class="btn btn-primary" onclick="launchToken()">🚀 Launch Token (10 L1 Fee)</button>
+            </div>
+
+            <!-- All Tokens Tab -->
+            <div id="all-tokens" class="tab-content">
+                <div id="allTokensList">
+                    <!-- Tokens will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadAllTokens()">🔄 Refresh Tokens</button>
+            </div>
+
+            <!-- Trending Tokens Tab -->
+            <div id="trending-tokens" class="tab-content">
+                <div id="trendingTokensList">
+                    <!-- Trending tokens will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadTrendingTokens()">🔄 Refresh Trending</button>
+            </div>
+
+            <!-- My Portfolio Tab -->
+            <div id="my-portfolio" class="tab-content">
+                <div class="form-group">
+                    <label>Your Username or Address:</label>
+                    <input type="text" id="portfolioUser" placeholder="Enter your username or wallet address">
+                </div>
+                <button class="btn btn-secondary" onclick="loadMyPortfolio()">💼 Load Portfolio</button>
+                <div id="portfolioDisplay" style="margin-top: 20px;">
+                    <!-- Portfolio will be displayed here -->
+                </div>
+            </div>
+
+            <!-- Token Trading Tab -->
+            <div id="token-trading" class="tab-content">
+                <div class="form-group">
+                    <label>Token Symbol:</label>
+                    <input type="text" id="tradeTokenSymbol" placeholder="Enter token symbol to trade">
+                </div>
+                <button class="btn btn-secondary" onclick="loadTokenForTrading()">📊 Load Token</button>
+                <div id="tokenTradingInterface" style="margin-top: 20px;">
+                    <!-- Trading interface will be displayed here -->
+                </div>
+            </div>
+
+            <div id="tokenStatus" class="status" style="display: none;"></div>
+        </div>
+
+        <!-- Blockchain Explorer Panel -->
+        <div class="panel">
+            <h2>🔍 Blockchain Explorer</h2>
+            <button class="btn btn-secondary" onclick="loadBlockchain()">🔄 Load Blockchain</button>
+            <div id="blockchainData" style="margin-top: 20px;">
+                <!-- Blockchain data will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Social Mining Panel -->
+        <div class="panel">
+            <h2>📱 Social Mining</h2>
+            <div class="tabs">
+                <div class="tab active" onclick="switchTab('create-post', this)">Create Post</div>
+                <div class="tab" onclick="switchTab('like-post', this)">Like Post</div>
+                <div class="tab" onclick="switchTab('comment-post', this)">Comment</div>
+                <div class="tab" onclick="switchTab('social-stats', this)">Social Stats</div>
+            </div>
+
+            <!-- Create Post Tab -->
+            <div id="create-post" class="tab-content active">
+                <div style="background: rgba(76, 175, 80, 0.1); border: 1px solid rgba(76, 175, 80, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                    <h3 style="color: #4CAF50; margin-bottom: 10px;">📝 Create Social Post</h3>
+                    <p style="color: #ccc; font-size: 0.9em;">Share content and earn L1 tokens! Each post earns you 1 L1.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Username:</label>
+                    <input type="text" id="postAuthor" placeholder="Enter your username">
+                </div>
+
+                <div class="form-group">
+                    <label>Post Content:</label>
+                    <textarea id="postContent" placeholder="What's on your mind? Share thoughts about crypto, blockchain, or anything interesting!" style="min-height: 120px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Category (Optional):</label>
+                    <input type="text" id="postCategory" placeholder="e.g., crypto, blockchain, memes, news">
+                </div>
+
+                <button class="btn btn-primary" onclick="createSocialPost()">📝 Post & Earn 1 L1</button>
+            </div>
+
+            <!-- Like Post Tab -->
+            <div id="like-post" class="tab-content">
+                <div style="background: rgba(255, 193, 7, 0.1); border: 1px solid rgba(255, 193, 7, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                    <h3 style="color: #FFC107; margin-bottom: 10px;">👍 Like Posts</h3>
+                    <p style="color: #ccc; font-size: 0.9em;">Like quality content! Post author earns 0.5 L1, you earn 0.1 L1.</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Username:</label>
+                    <input type="text" id="likeUser" placeholder="Enter your username">
+                </div>
+
+                <div class="form-group">
+                    <label>Post ID to Like:</label>
+                    <input type="text" id="likePostId" placeholder="Enter the post ID you want to like">
+                </div>
+
+                <button class="btn btn-warning" onclick="likeSocialPost()">👍 Like Post</button>
+            </div>
+
+            <!-- Comment Tab -->
+            <div id="comment-post" class="tab-content">
+                <div style="background: rgba(33, 150, 243, 0.1); border: 1px solid rgba(33, 150, 243, 0.3); border-radius: 10px; padding: 15px; margin-bottom: 20px;">
+                    <h3 style="color: #2196F3; margin-bottom: 10px;">💬 Comment on Posts</h3>
+                    <p style="color: #ccc; font-size: 0.9em;">Add meaningful comments and earn 0.5 L1 per comment!</p>
+                </div>
+
+                <div class="form-group">
+                    <label>Your Username:</label>
+                    <input type="text" id="commentUser" placeholder="Enter your username">
+                </div>
+
+                <div class="form-group">
+                    <label>Post ID to Comment On:</label>
+                    <input type="text" id="commentPostId" placeholder="Enter the post ID">
+                </div>
+
+                <div class="form-group">
+                    <label>Your Comment:</label>
+                    <textarea id="commentContent" placeholder="Share your thoughts, insights, or questions about this post..."></textarea>
+                </div>
+
+                <button class="btn btn-secondary" onclick="commentOnPost()">💬 Comment & Earn 0.5 L1</button>
+            </div>
+
+            <!-- Social Stats Tab -->
+            <div id="social-stats" class="tab-content">
+                <div id="socialStatsList">
+                    <!-- Social stats will be loaded here -->
+                </div>
+                <button class="btn btn-secondary" onclick="loadSocialStats()">🔄 Refresh Social Stats</button>
+            </div>
+
+            <div id="socialStatus" class="status" style="display: none;"></div>
         </div>
     </div>
 
     <script>
         const API_BASE = 'http://localhost:3030';
-        const knownAddresses = ['alice', 'bob', 'charlie', 'miner1', 'miner2'];
-        
-        // Load balances for known addresses
-        async function loadBalances() {
-            const balancesDiv = document.getElementById('balances');
-            balancesDiv.innerHTML = '<div class="loading">Loading balances...</div>';
+
+        // Tab switching function
+        function switchTab(tabId, tabElement) {
+            // Find the parent panel
+            const panel = tabElement.closest('.panel');
             
-            try {
-                const balancePromises = knownAddresses.map(async (address) => {
-                    const response = await fetch(`${API_BASE}/rpc/balance/${address}`);
-                    return await response.json();
-                });
-                
-                const balances = await Promise.all(balancePromises);
-                
-                balancesDiv.innerHTML = '';
-                balances.forEach(balance => {
-                    if (balance.balance > 0 || knownAddresses.includes(balance.address)) {
-                        const balanceCard = document.createElement('div');
-                        balanceCard.className = 'balance-card';
-                        balanceCard.innerHTML = `
-                            <div class="balance-address">${balance.address}</div>
-                            <div class="balance-amount">${balance.balance.toFixed(2)} L1</div>
-                        `;
-                        balancesDiv.appendChild(balanceCard);
-                    }
-                });
-            } catch (error) {
-                balancesDiv.innerHTML = `<div style="color: #f44336;">Error loading balances: ${error.message}</div>`;
+            // Remove active class from all tabs and tab contents in this panel
+            panel.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            panel.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            // Add active class to clicked tab and corresponding content
+            tabElement.classList.add('active');
+            panel.querySelector('#' + tabId).classList.add('active');
+        }
+
+        // Status display function
+        function showStatus(elementId, message, type) {
+            const statusElement = document.getElementById(elementId);
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+            statusElement.style.display = message ? 'block' : 'none';
+            
+            if (type === 'success' || type === 'error') {
+                setTimeout(() => {
+                    statusElement.style.display = 'none';
+                }, 5000);
             }
         }
-        
-        // Load blockchain
-        async function loadBlockchain() {
-            const status = document.getElementById('generalStatus');
-            const blockchain = document.getElementById('blockchain');
+
+        // Username System Functions
+        async function registerUsername() {
+            const username = document.getElementById('newUsername').value.trim();
             
-            showStatus('generalStatus', 'Loading blockchain...', 'loading');
-            
-            try {
-                const response = await fetch(`${API_BASE}/blockchain`);
-                const blocks = await response.json();
-                
-                blockchain.innerHTML = '';
-                showStatus('generalStatus', `✅ Loaded ${blocks.length} blocks`, 'success');
-                
-                blocks.forEach(block => {
-                    const blockDiv = document.createElement('div');
-                    blockDiv.className = 'block';
-                    
-                    let transactionsHtml = '';
-                    if (block.transactions && block.transactions.length > 0) {
-                        transactionsHtml = `
-                            <div class="transactions">
-                                <strong>Transactions:</strong>
-                                ${block.transactions.map(tx => `
-                                    <div class="transaction">
-                                        <div class="tx-details">
-                                            <strong>${tx.from}</strong> → <strong>${tx.to}</strong>
-                                        </div>
-                                        <div class="tx-amount">${tx.amount} L1</div>
-                                    </div>
-                                `).join('')}
-                            </div>
-                        `;
-                    }
-                    
-                    blockDiv.innerHTML = `
-                        <div class="block-header">
-                            <div class="block-number">Block #${block.index}</div>
-                            <div class="block-miner">⛏️ ${block.miner}</div>
-                        </div>
-                        ${transactionsHtml}
-                        <div><strong>Hash:</strong> <span class="hash">${block.hash}</span></div>
-                        <div><strong>Previous Hash:</strong> <span class="hash">${block.previous_hash}</span></div>
-                        <div><strong>Nonce:</strong> ${block.nonce}</div>
-                        <div class="timestamp">⏰ ${new Date(block.timestamp * 1000).toLocaleString()}</div>
-                    `;
-                    blockchain.appendChild(blockDiv);
-                });
-                
-                // Refresh balances after loading blockchain
-                loadBalances();
-            } catch (error) {
-                showStatus('generalStatus', `❌ Error: ${error.message}`, 'error');
-            }
-        }
-        
-        // Create transaction
-        async function createTransaction() {
-            const from = document.getElementById('fromAddress').value.trim();
-            const to = document.getElementById('toAddress').value.trim();
-            const amount = parseFloat(document.getElementById('amount').value);
-            
-            if (!from || !to || !amount) {
-                showStatus('txStatus', 'Please fill in all fields', 'error');
+            if (!username) {
+                showStatus('usernameStatus', 'Please enter a username', 'error');
                 return;
             }
             
-            showStatus('txStatus', 'Creating transaction...', 'loading');
+            if (username.length < 3 || username.length > 20) {
+                showStatus('usernameStatus', 'Username must be between 3-20 characters', 'error');
+                return;
+            }
+            
+            if (!/^[a-zA-Z0-9_-]+$/.test(username)) {
+                showStatus('usernameStatus', 'Username can only contain letters, numbers, underscores, and hyphens', 'error');
+                return;
+            }
+            
+            showStatus('usernameStatus', 'Creating your account...', 'loading');
             
             try {
-                const response = await fetch(`${API_BASE}/rpc/transaction`, {
+                const response = await fetch(`${API_BASE}/rpc/register-username`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ from, to, amount })
+                    body: JSON.stringify({ username })
                 });
                 
                 const result = await response.json();
                 
                 if (result.success) {
-                    showStatus('txStatus', '✅ Transaction created! Mine a block to confirm.', 'success');
-                    document.getElementById('fromAddress').value = '';
-                    document.getElementById('toAddress').value = '';
-                    document.getElementById('amount').value = '';
+                    showStatus('usernameStatus', `🎉 Account created successfully!`, 'success');
+                    document.getElementById('newUsername').value = '';
+                    
+                    // Show account details
+                    const accountDetails = document.createElement('div');
+                    accountDetails.style.marginTop = '15px';
+                    accountDetails.style.padding = '15px';
+                    accountDetails.style.background = 'rgba(76, 175, 80, 0.1)';
+                    accountDetails.style.borderRadius = '8px';
+                    accountDetails.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+                    accountDetails.innerHTML = `
+                        <div style="color: #4CAF50; font-weight: bold; margin-bottom: 10px;">✅ Account Created!</div>
+                        <div><strong>Username:</strong> ${result.username}</div>
+                        <div><strong>Wallet Address:</strong> <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">${result.address}</code></div>
+                        <div><strong>Initial Balance:</strong> <span style="color: #FFD700;">${result.initial_balance} L1</span></div>
+                        <div style="margin-top: 10px; color: #888; font-size: 0.9em;">
+                            💡 Save your username - you'll use it to access your wallet!
+                        </div>
+                    `;
+                    
+                    // Replace the status with account details temporarily
+                    setTimeout(() => {
+                        const statusDiv = document.getElementById('usernameStatus');
+                        statusDiv.innerHTML = '';
+                        statusDiv.appendChild(accountDetails);
+                        statusDiv.className = 'status success';
+                        statusDiv.style.display = 'block';
+                    }, 1000);
+                    
+                    loadAllUsernames(); // Refresh username list
+                    loadBalances(); // Refresh balances
                 } else {
-                    showStatus('txStatus', `❌ Error: ${result.error}`, 'error');
+                    showStatus('usernameStatus', `❌ Error: ${result.error}`, 'error');
                 }
             } catch (error) {
-                showStatus('txStatus', `❌ Error: ${error.message}`, 'error');
+                showStatus('usernameStatus', `❌ Error: ${error.message}`, 'error');
             }
         }
-        
-        // Mine block
-        async function mineBlock() {
-            const minerAddress = document.getElementById('minerAddress').value.trim();
+
+        async function loadMyWallet() {
+            const username = document.getElementById('myUsername').value.trim();
+            const walletDiv = document.getElementById('myWalletInfo');
             
-            if (!minerAddress) {
-                showStatus('mineStatus', 'Please enter miner address', 'error');
+            if (!username) {
+                showStatus('usernameStatus', 'Please enter your username', 'error');
                 return;
             }
             
-            showStatus('mineStatus', '⛏️ Mining block...', 'loading');
+            walletDiv.innerHTML = '<div class="loading">Loading your wallet...</div>';
             
+            try {
+                const response = await fetch(`${API_BASE}/rpc/wallet/${username}`);
+                const result = await response.json();
+                
+                if (result.success) {
+                    walletDiv.innerHTML = `
+                        <div style="background: rgba(76, 175, 80, 0.1); border-radius: 10px; padding: 15px; border: 1px solid rgba(76, 175, 80, 0.3);">
+                            <div style="color: #4CAF50; font-weight: bold; margin-bottom: 15px;">💰 Your Wallet</div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                                <div>
+                                    <div style="color: #888; font-size: 0.9em;">Username</div>
+                                    <div style="color: #1E90FF; font-weight: bold;">${result.username}</div>
+                                </div>
+                                <div>
+                                    <div style="color: #888; font-size: 0.9em;">Balance</div>
+                                    <div style="color: #FFD700; font-size: 1.2em; font-weight: bold;">${result.balance.toFixed(2)} L1</div>
+                                </div>
+                                <div>
+                                    <div style="color: #888; font-size: 0.9em;">Total Sent</div>
+                                    <div style="color: #f44336;">${result.total_sent.toFixed(2)} L1</div>
+                                </div>
+                                <div>
+                                    <div style="color: #888; font-size: 0.9em;">Total Received</div>
+                                    <div style="color: #4CAF50;">${result.total_received.toFixed(2)} L1</div>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-bottom: 10px;">
+                                <div style="color: #888; font-size: 0.9em;">Wallet Address</div>
+                                <div style="font-family: monospace; background: rgba(255,255,255,0.1); padding: 8px; border-radius: 4px; word-break: break-all; font-size: 0.9em;">${result.address}</div>
+                            </div>
+                            
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em;">
+                                <div>
+                                    <span style="color: #888;">Transactions:</span> 
+                                    <span style="color: #4CAF50;">${result.transaction_count}</span>
+                                </div>
+                                <div>
+                                    <span style="color: #888;">Verified:</span> 
+                                    <span style="color: ${result.is_verified ? '#4CAF50' : '#FFA500'};">${result.is_verified ? '✅ Yes' : '⏳ Pending'}</span>
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid rgba(255,255,255,0.1);">
+                                <button class="btn btn-primary" onclick="loadTransactionHistoryForUser('${result.username}')">📋 View Transaction History</button>
+                                <button class="btn btn-secondary" onclick="copyToClipboard('${result.address}')">📋 Copy Address</button>
+                            </div>
+                        </div>
+                    `;
+                    showStatus('usernameStatus', '', 'success');
+                } else {
+                    walletDiv.innerHTML = `<div style="color: #f44336;">❌ ${result.error}</div>`;
+                }
+            } catch (error) {
+                walletDiv.innerHTML = `<div style="color: #f44336;">❌ Error loading wallet: ${error.message}</div>`;
+            }
+        }
+
+        async function loadAllUsernames() {
+            const listDiv = document.getElementById('allUsernamesList');
+            listDiv.innerHTML = '<div class="loading">Loading users...</div>';
+            
+            try {
+                const response = await fetch(`${API_BASE}/rpc/usernames`);
+                const result = await response.json();
+                
+                listDiv.innerHTML = '';
+                
+                if (result.usernames.length === 0) {
+                    listDiv.innerHTML = '<div style="color: #888;">No users registered yet</div>';
+                    return;
+                }
+                
+                result.usernames.forEach(user => {
+                    const userDiv = document.createElement('div');
+                    userDiv.className = 'balance-card';
+                    userDiv.style.textAlign = 'left';
+                    userDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                            <div class="username-display">@${user.username}</div>
+                            <div style="color: ${user.is_verified ? '#4CAF50' : '#FFA500'}; font-size: 0.8em;">
+                                ${user.is_verified ? '✅ Verified' : '⏳ Pending'}
+                            </div>
+                        </div>
+                        <div style="font-family: monospace; font-size: 0.8em; color: #888; margin-bottom: 5px;">
+                            ${user.address}
+                        </div>
+                        <div style="font-size: 0.8em; color: #666;">
+                            Registered: ${new Date(user.registered_at * 1000).toLocaleDateString()}
+                        </div>
+                    `;
+                    listDiv.appendChild(userDiv);
+                });
+                
+                // Add total count
+                const totalDiv = document.createElement('div');
+                totalDiv.style.textAlign = 'center';
+                totalDiv.style.marginTop = '15px';
+                totalDiv.style.color = '#888';
+                totalDiv.innerHTML = `📊 Total registered users: ${result.total_count}`;
+                listDiv.appendChild(totalDiv);
+                
+            } catch (error) {
+                listDiv.innerHTML = `<div style="color: #f44336;">Error loading users: ${error.message}</div>`;
+            }
+        }
+
+        // Helper functions
+        function loadTransactionHistoryForUser(username) {
+            // Switch to the transaction history tab
+            const historyTab = document.querySelector('[onclick*="tx-history"]');
+            const historyContent = document.getElementById('tx-history');
+            
+            if (historyTab && historyContent) {
+                // Remove active from all tabs in transaction panel
+                historyTab.closest('.panel').querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+                historyTab.closest('.panel').querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+                
+                // Activate history tab
+                historyTab.classList.add('active');
+                historyContent.classList.add('active');
+                
+                // Fill in the username and load history
+                document.getElementById('historyAddress').value = username;
+                loadTransactionHistoryWithLabels();
+            }
+        }
+
+        async function copyToClipboard(text) {
+            try {
+                await navigator.clipboard.writeText(text);
+                showStatus('usernameStatus', '📋 Address copied to clipboard!', 'success');
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+                showStatus('usernameStatus', '❌ Failed to copy address', 'error');
+            }
+        }
+
+        // Transaction Functions
+        async function createTransaction() {
+            const from = document.getElementById('fromAddress').value.trim();
+            const to = document.getElementById('toAddress').value.trim();
+            const amount = parseFloat(document.getElementById('amount').value);
+
+            if (!from || !to || !amount) {
+                showStatus('transactionStatus', 'Please fill in all fields', 'error');
+                return;
+            }
+
+            showStatus('transactionStatus', 'Creating transaction...', 'loading');
+
+            try {
+                const response = await fetch(`${API_BASE}/rpc/transaction-username`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ from, to, amount })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('transactionStatus', 'Transaction created successfully!', 'success');
+                    document.getElementById('fromAddress').value = '';
+                    document.getElementById('toAddress').value = '';
+                    document.getElementById('amount').value = '';
+                    loadBalances();
+                } else {
+                    showStatus('transactionStatus', `Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('transactionStatus', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function createEnhancedTransaction() {
+            const from = document.getElementById('enhancedFromAddress').value.trim();
+            const to = document.getElementById('enhancedToAddress').value.trim();
+            const amount = parseFloat(document.getElementById('enhancedAmount').value);
+            const fee = parseFloat(document.getElementById('enhancedFee').value);
+            const message = document.getElementById('enhancedMessage').value.trim();
+
+            if (!from || !to || !amount || !fee) {
+                showStatus('transactionStatus', 'Please fill in required fields', 'error');
+                return;
+            }
+
+            showStatus('transactionStatus', 'Creating enhanced transaction...', 'loading');
+
+            try {
+                const requestBody = { from, to, amount, fee };
+                if (message) requestBody.message = message;
+
+                const response = await fetch(`${API_BASE}/rpc/enhanced-transaction`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('transactionStatus', '🔒 Enhanced transaction created successfully!', 'success');
+                    document.getElementById('enhancedFromAddress').value = '';
+                    document.getElementById('enhancedToAddress').value = '';
+                    document.getElementById('enhancedAmount').value = '';
+                    document.getElementById('enhancedFee').value = '0.01';
+                    document.getElementById('enhancedMessage').value = '';
+                    loadBalances();
+                    loadPoolStats();
+                } else {
+                    showStatus('transactionStatus', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('transactionStatus', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadTransactionHistoryWithLabels() {
+            const address = document.getElementById('historyAddress').value.trim();
+            const historyDiv = document.getElementById('transactionHistory');
+
+            if (!address) {
+                showStatus('transactionStatus', 'Please enter an address or username', 'error');
+                return;
+            }
+
+            historyDiv.innerHTML = '<div class="loading">Loading transaction history...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/rpc/history-with-labels/${address}`);
+                const result = await response.json();
+
+                historyDiv.innerHTML = '';
+
+                if (result.transactions.length === 0) {
+                    historyDiv.innerHTML = '<div style="color: #888;">No transactions found</div>';
+                    return;
+                }
+
+                result.transactions.forEach(tx => {
+                    const txDiv = document.createElement('div');
+                    txDiv.className = 'transaction-card';
+                    txDiv.innerHTML = `
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                            <div>
+                                <strong>${tx.from_display}</strong> → <strong>${tx.to_display}</strong>
+                            </div>
+                            <div style="color: #FFD700; font-weight: bold;">${tx.amount} L1</div>
+                        </div>
+                        <div style="font-size: 0.9em; color: #ccc;">
+                            ${new Date(tx.timestamp * 1000).toLocaleString()}
+                        </div>
+                        <div style="font-family: monospace; font-size: 0.8em; color: #888; margin-top: 5px;">
+                            From: ${tx.from}<br>
+                            To: ${tx.to}
+                        </div>
+                    `;
+                    historyDiv.appendChild(txDiv);
+                });
+
+                // Add summary
+                const summaryDiv = document.createElement('div');
+                summaryDiv.style.textAlign = 'center';
+                summaryDiv.style.marginTop = '15px';
+                summaryDiv.style.color = '#888';
+                summaryDiv.innerHTML = `📊 Total transactions: ${result.total_count}`;
+                historyDiv.appendChild(summaryDiv);
+
+            } catch (error) {
+                historyDiv.innerHTML = `<div style="color: #f44336;">Error loading history: ${error.message}</div>`;
+            }
+        }
+
+        // Mining Functions
+        async function mineBlock() {
+            const minerAddress = document.getElementById('minerAddress').value.trim();
+
+            if (!minerAddress) {
+                showStatus('miningStatus', 'Please enter miner address', 'error');
+                return;
+            }
+
+            showStatus('miningStatus', 'Mining block...', 'loading');
+
             try {
                 const response = await fetch(`${API_BASE}/rpc/mine`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ miner_address: minerAddress })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
-                    showStatus('mineStatus', '✅ Block mined successfully!', 'success');
-                    document.getElementById('minerAddress').value = '';
-                    setTimeout(() => {
-                        loadBlockchain();
-                    }, 1000);
+                    showStatus('miningStatus', 'Block mined successfully!', 'success');
+                    loadNetworkStats();
+                    loadBalances();
                 } else {
-                    showStatus('mineStatus', `❌ Error: ${result.error}`, 'error');
+                    showStatus('miningStatus', `Error: ${result.error}`, 'error');
                 }
             } catch (error) {
-                showStatus('mineStatus', `❌ Error: ${error.message}`, 'error');
+                showStatus('miningStatus', `Error: ${error.message}`, 'error');
             }
         }
-        
-        // Connect to network
-        async function connectToNetwork() {
-            const address = document.getElementById('connectAddress').value.trim();
-            
-            if (!address) {
-                showStatus('connectionStatus', 'Please enter your address', 'error');
+
+        async function mineEnhancedBlock() {
+            const minerAddress = document.getElementById('enhancedMinerAddress').value.trim();
+
+            if (!minerAddress) {
+                showStatus('miningStatus', 'Please enter miner address or username', 'error');
                 return;
             }
-            
-            showStatus('connectionStatus', 'Connecting to network...', 'loading');
-            
+
+            showStatus('miningStatus', 'Mining enhanced block...', 'loading');
+
             try {
-                const response = await fetch(`${API_BASE}/rpc/connect`, {
+                const response = await fetch(`${API_BASE}/rpc/mine-enhanced`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ address })
+                    body: JSON.stringify({ miner_address: minerAddress })
                 });
-                
+
                 const result = await response.json();
-                
+
                 if (result.success) {
-                    showStatus('connectionStatus', `✅ ${result.message}`, 'success');
-                    setTimeout(() => {
-                        loadConnections();
-                        loadNetworkStats();
-                    }, 1000);
+                    showStatus('miningStatus', '🔒 Enhanced block mined successfully!', 'success');
+                    loadNetworkStats();
+                    loadBalances();
+                    loadPoolStats();
+                    loadSecurityStats();
                 } else {
-                    showStatus('connectionStatus', `❌ Error: ${result.error}`, 'error');
+                    showStatus('miningStatus', `❌ Error: ${result.error}`, 'error');
                 }
             } catch (error) {
-                showStatus('connectionStatus', `❌ Error: ${error.message}`, 'error');
+                showStatus('miningStatus', `❌ Error: ${error.message}`, 'error');
             }
         }
-        
-        // Disconnect from network
-        async function disconnectFromNetwork() {
-            const address = document.getElementById('connectAddress').value.trim();
-            
-            if (!address) {
-                showStatus('connectionStatus', 'Please enter your address', 'error');
-                return;
-            }
-            
-            showStatus('connectionStatus', 'Disconnecting...', 'loading');
-            
+
+        // Network Functions
+        async function loadNetworkStats() {
+            const statsDiv = document.getElementById('networkStats');
+            statsDiv.innerHTML = '<div class="loading">Loading network stats...</div>';
+
             try {
-                const response = await fetch(`${API_BASE}/rpc/disconnect`, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ address })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    showStatus('connectionStatus', `✅ ${result.message}`, 'success');
-                    document.getElementById('connectAddress').value = '';
-                    setTimeout(() => {
-                        loadConnections();
-                        loadNetworkStats();
-                    }, 1000);
-                } else {
-                    showStatus('connectionStatus', `❌ Error: ${result.error}`, 'error');
-                }
+                const response = await fetch(`${API_BASE}/rpc/stats`);
+                const stats = await response.json();
+
+                statsDiv.innerHTML = `
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.total_blocks}</div>
+                        <div class="stat-label">Total Blocks</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.circulating_supply.toFixed(2)}</div>
+                        <div class="stat-label">Circulating Supply</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.active_connections}</div>
+                        <div class="stat-label">Active Connections</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.current_reward_rate.toFixed(4)}</div>
+                        <div class="stat-label">Reward Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${((stats.circulating_supply / stats.total_supply) * 100).toFixed(1)}%</div>
+                        <div class="stat-label">Supply Mined</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">${stats.remaining_supply.toFixed(2)}</div>
+                        <div class="stat-label">Remaining Supply</div>
+                    </div>
+                `;
             } catch (error) {
-                showStatus('connectionStatus', `❌ Error: ${error.message}`, 'error');
+                statsDiv.innerHTML = `<div style="color: #f44336;">Error loading stats: ${error.message}</div>`;
             }
         }
-        
-        // Load active connections
+
+        async function loadBalances() {
+            const balancesDiv = document.getElementById('balancesList');
+            balancesDiv.innerHTML = '<div class="loading">Loading balances...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/rpc/all-balances`);
+                const result = await response.json();
+
+                balancesDiv.innerHTML = '';
+
+                if (result.balances.length === 0) {
+                    balancesDiv.innerHTML = '<div style="color: #888;">No balances found</div>';
+                    return;
+                }
+
+                result.balances.forEach(balance => {
+                    const balanceDiv = document.createElement('div');
+                    balanceDiv.className = 'balance-card';
+                    balanceDiv.innerHTML = `
+                        <div class="address-display">${balance.address}</div>
+                        <div class="balance-amount">${balance.balance.toFixed(2)} L1</div>
+                    `;
+                    balancesDiv.appendChild(balanceDiv);
+                });
+            } catch (error) {
+                balancesDiv.innerHTML = `<div style="color: #f44336;">Error loading balances: ${error.message}</div>`;
+            }
+        }
+
         async function loadConnections() {
-            const connectionsDiv = document.getElementById('activeConnections');
+            const connectionsDiv = document.getElementById('connectionsList');
             connectionsDiv.innerHTML = '<div class="loading">Loading connections...</div>';
-            
+
             try {
                 const response = await fetch(`${API_BASE}/rpc/connections`);
                 const connections = await response.json();
-                
+
                 connectionsDiv.innerHTML = '';
-                
+
                 if (connections.length === 0) {
                     connectionsDiv.innerHTML = '<div style="color: #888;">No active connections</div>';
                     return;
                 }
-                
+
                 connections.forEach(conn => {
                     const connDiv = document.createElement('div');
                     connDiv.className = 'balance-card';
-                    const connectedTime = Math.floor((Date.now() / 1000) - conn.connected_at);
                     connDiv.innerHTML = `
-                        <div class="balance-address">${conn.address}</div>
-                        <div style="color: #FFD700; font-size: 0.9em;">
-                            Connected: ${Math.floor(connectedTime / 60)}m ${connectedTime % 60}s
-                        </div>
-                        <div style="color: #4CAF50; font-size: 0.9em;">
-                            Rewards: ${conn.total_rewards.toFixed(4)} L1
-                        </div>
+                        <div class="address-display">${conn.address}</div>
+                        <div style="color: #4CAF50;">Connected: ${new Date(conn.connected_at * 1000).toLocaleString()}</div>
+                        <div style="color: #FFD700;">Total Rewards: ${conn.total_rewards.toFixed(4)} L1</div>
                     `;
                     connectionsDiv.appendChild(connDiv);
                 });
@@ -647,55 +1423,511 @@
                 connectionsDiv.innerHTML = `<div style="color: #f44336;">Error loading connections: ${error.message}</div>`;
             }
         }
-        
-        // Load network stats
-        async function loadNetworkStats() {
-            const statsDiv = document.getElementById('networkStats');
-            
+
+        async function connectToNetwork() {
+            const address = document.getElementById('connectionAddress').value.trim();
+
+            if (!address) {
+                showStatus('networkStatus', 'Please enter your address', 'error');
+                return;
+            }
+
+            showStatus('networkStatus', 'Connecting to network...', 'loading');
+
             try {
-                const response = await fetch(`${API_BASE}/rpc/stats`);
+                const response = await fetch(`${API_BASE}/rpc/connect`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('networkStatus', 'Connected to network successfully!', 'success');
+                    loadConnections();
+                } else {
+                    showStatus('networkStatus', `Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('networkStatus', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function disconnectFromNetwork() {
+            const address = document.getElementById('connectionAddress').value.trim();
+
+            if (!address) {
+                showStatus('networkStatus', 'Please enter your address', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/rpc/disconnect`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ address })
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('networkStatus', 'Disconnected from network', 'success');
+                    loadConnections();
+                } else {
+                    showStatus('networkStatus', `Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('networkStatus', `Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadSecurityStats() {
+            const statsDiv = document.getElementById('securityStatsList');
+            statsDiv.innerHTML = '<div class="loading">Loading security stats...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/rpc/security-stats`);
                 const stats = await response.json();
-                
+
                 statsDiv.innerHTML = `
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-size: 0.9em;">
-                        <div>Total Supply: <span style="color: #FFD700;">${stats.total_supply.toLocaleString()}</span></div>
-                        <div>Circulating: <span style="color: #4CAF50;">${stats.circulating_supply.toFixed(2)}</span></div>
-                        <div>Remaining: <span style="color: #888;">${stats.remaining_supply.toFixed(0)}</span></div>
-                        <div>Current Reward: <span style="color: #FFD700;">${stats.current_reward_rate.toFixed(4)} L1/min</span></div>
-                        <div>Active Users: <span style="color: #4CAF50;">${stats.active_connections}</span></div>
-                        <div>Total Blocks: <span style="color: #4CAF50;">${stats.total_blocks}</span></div>
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.total_failed_attempts}</div>
+                            <div class="stat-label">Failed Attempts</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.blacklisted_addresses.length}</div>
+                            <div class="stat-label">Blacklisted Addresses</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.rate_limited_addresses.length}</div>
+                            <div class="stat-label">Rate Limited</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.transactions_validated}</div>
+                            <div class="stat-label">Transactions Validated</div>
+                        </div>
+                    </div>
+                    ${stats.blacklisted_addresses.length > 0 ? `
+                        <div style="margin-top: 20px;">
+                            <h4 style="color: #f44336; margin-bottom: 10px;">🚫 Blacklisted Addresses:</h4>
+                            ${stats.blacklisted_addresses.map(addr => `
+                                <div class="balance-card" style="background: rgba(244, 67, 54, 0.1); border-color: rgba(244, 67, 54, 0.3);">
+                                    <div style="font-family: monospace; color: #f44336;">${addr}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : ''}
+                `;
+            } catch (error) {
+                statsDiv.innerHTML = `<div style="color: #f44336;">Error loading security stats: ${error.message}</div>`;
+            }
+        }
+
+        async function loadPoolStats() {
+            const statsDiv = document.getElementById('poolStatsList');
+            statsDiv.innerHTML = '<div class="loading">Loading pool stats...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/rpc/pool-stats`);
+                const stats = await response.json();
+
+                statsDiv.innerHTML = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.pending_count}</div>
+                            <div class="stat-label">Pending Transactions</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.confirmed_count}</div>
+                            <div class="stat-label">Confirmed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.failed_count}</div>
+                            <div class="stat-label">Failed</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.average_fee.toFixed(4)}</div>
+                            <div class="stat-label">Average Fee</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.total_volume.toFixed(2)}</div>
+                            <div class="stat-label">Total Volume</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-value">${stats.total_fees.toFixed(4)}</div>
+                            <div class="stat-label">Total Fees</div>
+                        </div>
                     </div>
                 `;
             } catch (error) {
-                statsDiv.innerHTML = `<div style="color: #f44336;">Error loading stats</div>`;
+                statsDiv.innerHTML = `<div style="color: #f44336;">Error loading pool stats: ${error.message}</div>`;
             }
         }
-        
-        // Helper function to show status messages
-        function showStatus(elementId, message, type) {
-            const statusDiv = document.getElementById(elementId);
-            statusDiv.className = `status ${type}`;
-            statusDiv.innerHTML = message;
-            statusDiv.style.display = 'block';
-            
-            if (type === 'success') {
-                setTimeout(() => {
-                    statusDiv.style.display = 'none';
-                }, 3000);
+
+        async function loadBlockchain() {
+            const blockchainDiv = document.getElementById('blockchainData');
+            blockchainDiv.innerHTML = '<div class="loading">Loading blockchain...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/blockchain`);
+                const blockchain = await response.json();
+
+                blockchainDiv.innerHTML = '';
+
+                blockchain.reverse().forEach((block, index) => {
+                    const blockDiv = document.createElement('div');
+                    blockDiv.className = 'transaction-card';
+                    blockDiv.innerHTML = `
+                        <h4 style="color: #FFD700; margin-bottom: 10px;">Block #${block.index}</h4>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px;">
+                            <div><strong>Timestamp:</strong> ${new Date(block.timestamp * 1000).toLocaleString()}</div>
+                            <div><strong>Miner:</strong> ${block.miner}</div>
+                            <div><strong>Transactions:</strong> ${block.transactions.length}</div>
+                            <div><strong>Reward:</strong> ${block.reward} L1</div>
+                        </div>
+                        <div style="font-family: monospace; font-size: 0.8em; color: #888; margin-bottom: 10px;">
+                            <div><strong>Hash:</strong> ${block.hash}</div>
+                            <div><strong>Previous Hash:</strong> ${block.previous_hash}</div>
+                        </div>
+                        <div style="max-height: 200px; overflow-y: auto;">
+                            <strong>Transactions:</strong>
+                            ${block.transactions.map(tx => `
+                                <div style="margin: 5px 0; padding: 5px; background: rgba(255,255,255,0.05); border-radius: 4px;">
+                                    <strong>${tx.from}</strong> → <strong>${tx.to}</strong>: <span style="color: #FFD700;">${tx.amount} L1</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    blockchainDiv.appendChild(blockDiv);
+                });
+            } catch (error) {
+                blockchainDiv.innerHTML = `<div style="color: #f44336;">Error loading blockchain: ${error.message}</div>`;
             }
         }
-        
-        // Load data on page load
-        loadBlockchain();
-        loadBalances();
-        loadConnections();
-        loadNetworkStats();
-        
-        // Auto-refresh connections and stats every 10 seconds
-        setInterval(() => {
-            loadConnections();
+
+        // Initialize page
+        window.addEventListener('DOMContentLoaded', function() {
             loadNetworkStats();
-        }, 10000);
-    </script>
-</body>
-</html>
+            loadBalances();
+            loadAllUsernames();
+            loadConnections();
+            loadAllTokens();
+            loadSocialStats(); // Add this line
+            
+            // Auto-refresh intervals
+            setInterval(loadNetworkStats, 30000);
+            setInterval(loadAllTokens, 60000);
+            setInterval(loadSocialStats, 45000); // Add this line
+        });
+
+        // Token Launch Functions
+        async function launchToken() {
+            const symbol = document.getElementById('tokenSymbol').value.trim().toUpperCase();
+            const name = document.getElementById('tokenName').value.trim();
+            const description = document.getElementById('tokenDescription').value.trim();
+            const creator = document.getElementById('tokenCreator').value.trim();
+            const totalSupply = parseFloat(document.getElementById('tokenSupply').value);
+            const initialPrice = parseFloat(document.getElementById('tokenPrice').value);
+            const initialLiquidity = parseFloat(document.getElementById('tokenLiquidity').value);
+            const website = document.getElementById('tokenWebsite').value.trim();
+            const twitter = document.getElementById('tokenTwitter').value.trim();
+
+            if (!symbol || !name || !description || !creator || !totalSupply || !initialPrice || !initialLiquidity) {
+                showStatus('tokenStatus', 'Please fill in all required fields', 'error');
+                return;
+            }
+
+            showStatus('tokenStatus', 'Launching your token...', 'loading');
+
+            try {
+                const requestBody = {
+                    symbol,
+                    name,
+                    description,
+                    creator,
+                    total_supply: totalSupply,
+                    initial_price: initialPrice,
+                    initial_liquidity: initialLiquidity
+                };
+
+                if (website) requestBody.website = website;
+                if (twitter) requestBody.twitter = twitter;
+
+                const response = await fetch(`${API_BASE}/rpc/launch-token`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showStatus('tokenStatus', `🚀 Token ${symbol} launched successfully!`, 'success');
+                    
+                    // Clear form
+                    document.getElementById('tokenSymbol').value = '';
+                    document.getElementById('tokenName').value = '';
+                    document.getElementById('tokenDescription').value = '';
+                    document.getElementById('tokenCreator').value = '';
+                    document.getElementById('tokenSupply').value = '';
+                    document.getElementById('tokenPrice').value = '';
+                    document.getElementById('tokenLiquidity').value = '';
+                    document.getElementById('tokenWebsite').value = '';
+                    document.getElementById('tokenTwitter').value = '';
+
+                    // Show token details
+                    setTimeout(() => {
+                        const statusDiv = document.getElementById('tokenStatus');
+                        statusDiv.innerHTML = `
+                            <div style="background: rgba(76, 175, 80, 0.1); border-radius: 8px; padding: 15px;">
+                                <div style="color: #4CAF50; font-weight: bold; margin-bottom: 10px;">✅ Token Launched!</div>
+                                <div><strong>Symbol:</strong> ${result.token.symbol}</div>
+                                <div><strong>Name:</strong> ${result.token.name}</div>
+                                <div><strong>Contract:</strong> <code>${result.token.contract_address}</code></div>
+                                <div><strong>Your Allocation:</strong> ${(result.token.total_supply * 0.2).toLocaleString()} ${result.token.symbol}</div>
+                                <div><strong>Pool Liquidity:</strong> ${result.token.liquidity_pool} L1</div>
+                            </div>
+                        `;
+                        statusDiv.className = 'status success';
+                        statusDiv.style.display = 'block';
+                    }, 1000);
+
+                    loadAllTokens();
+                } else {
+                    showStatus('tokenStatus', `❌ Error: ${result.error}`, 'error');
+                }
+            } catch (error) {
+                showStatus('tokenStatus', `❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loadAllTokens() {
+            const listDiv = document.getElementById('allTokensList');
+            listDiv.innerHTML = '<div class="loading">Loading tokens...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/rpc/tokens`);
+                const result = await response.json();
+
+                listDiv.innerHTML = '';
+
+                if (result.tokens.length === 0) {
+                    listDiv.innerHTML = '<div style="color: #888;">No tokens launched yet. Be the first! 🚀</div>';
+                    return;
+                }
+
+                result.tokens.forEach(token => {
+                    const tokenDiv = document.createElement('div');
+                    tokenDiv.className = 'token-card';
+                    tokenDiv.innerHTML = `
+                        <div class="token-header">
+                            <div>
+                                <div class="token-symbol">${token.symbol}</div>
+                                <div class="token-name">${token.name}</div>
+                            </div>
+                            <div class="token-status status-${token.status.toLowerCase()}">${token.status}</div>
+                        </div>
+                        
+                        <div class="token-stats">
+                            <div class="token-stat">
+                                <div class="token-stat-value">${token.price_in_l1.toFixed(6)}</div>
+                                <div class="token-stat-label">Price (L1)</div>
+                            </div>
+                                <div class="token-stat-value">${token.market_cap.toFixed(2)}</div>
+                                <div class="token-stat-label">Market Cap</div>
+                            </div>
+                            <div class="token-stat">
+                                <div class="token-stat-value">${token.holders_count}</div>
+                                <div class="token-stat-label">Holders</div>
+                            </div>
+                        </div>
+
+                        <div style="margin-bottom: 10px;">
+                            <div style="color: #888; font-size: 0.9em;">Description:</div>
+                            <div style="color: #ccc; font-size: 0.9em;">${token.description}</div>
+                        </div>
+
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div class="token-creator">👤 ${token.creator}</div>
+                            <div style="font-size: 0.8em; color: #888;">
+                                Created: ${new Date(token.created_at * 1000).toLocaleDateString()}
+                            </div>
+                        </div>
+
+                        ${token.status === 'Trading' || token.status === 'Graduated' ? `
+                            <div class="trading-interface">
+                                <div style="color: #4CAF50; font-weight: bold; margin-bottom: 10px;">💹 Quick Trade</div>
+                                <div style="display: flex; gap: 10px; align-items: center;">
+                                    <input type="number" id="trade-amount-${token.symbol}" placeholder="L1 amount" step="0.01" style="flex: 1;">
+                                    <button class="btn btn-buy" onclick="quickBuyToken('${token.symbol}')">Buy</button>
+                                    <button class="btn btn-sell" onclick="quickSellToken('${token.symbol}')">Sell</button>
+                                </div>
+                        ` : ''}
+                    `;
+                    listDiv.appendChild(tokenDiv);
+                });
+
+                // Add summary
+                const summaryDiv = document.createElement('div');
+                summaryDiv.style.textAlign = 'center';
+                summaryDiv.style.marginTop = '20px';
+                summaryDiv.style.color = '#888';
+                summaryDiv.innerHTML = `🪙 Total tokens: ${result.total_count}`;
+                listDiv.appendChild(summaryDiv);
+
+            } catch (error) {
+                listDiv.innerHTML = `<div style="color: #f44336;">Error loading tokens: ${error.message}</div>`;
+            }
+        }
+
+        async function loadTrendingTokens() {
+            const listDiv = document.getElementById('trendingTokensList');
+            listDiv.innerHTML = '<div class="loading">Loading trending tokens...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/rpc/trending-tokens`);
+                const result = await response.json();
+
+                listDiv.innerHTML = '';
+
+                if (result.tokens.length === 0) {
+                    listDiv.innerHTML = '<div style="color: #888;">No trending tokens yet</div>';
+                    return;
+                }
+
+                result.tokens.forEach((token, index) => {
+                    const tokenDiv = document.createElement('div');
+                    tokenDiv.className = 'token-card';
+                    tokenDiv.style.borderLeft = index < 3 ? '4px solid #FFD700' : '4px solid #4CAF50';
+                    tokenDiv.innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <div style="font-size: 1.5em;">${index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : '🔥'}</div>
+                            <div style="flex: 1;">
+                                <div class="token-symbol">${token.symbol}</div>
+                                <div class="token-name">${token.name}</div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: #FFD700; font-weight: bold;">${token.trade_count} trades</div>
+                                <div style="color: #ccc; font-size: 0.9em;">${token.price_in_l1.toFixed(6)} L1</div>
+                            </div>
+                        </div>
+                    `;
+                    listDiv.appendChild(tokenDiv);
+                });
+
+            } catch (error) {
+                listDiv.innerHTML = `<div style="color: #f44336;">Error loading trending tokens: ${error.message}</div>`;
+            }
+        }
+
+                async function loadMyPortfolio() {
+                    const user = document.getElementById('portfolioUser').value.trim();
+                    const portfolioDiv = document.getElementById('portfolioDisplay');
+                    
+                    if (!user) {
+                        showStatus('tokenStatus', 'Please enter your username or address', 'error');
+                        return;
+                    }
+                    
+                    portfolioDiv.innerHTML = '<div class="loading">Loading your portfolio...</div>';
+                    
+                    try {
+                        const response = await fetch(`${API_BASE}/rpc/portfolio/${user}`);
+                        const result = await response.json();
+                        
+                        portfolioDiv.innerHTML = '';
+                        
+                        if (!result.holdings || result.holdings.length === 0) {
+                            portfolioDiv.innerHTML = `
+                                <div style="text-align: center; color: #888; padding: 40px;">
+                                    <div style="font-size: 2em; margin-bottom: 10px;">💼</div>
+                                    <div>No token holdings found</div>
+                                    <div style="font-size: 0.9em; margin-top: 5px;">Start trading to build your portfolio!</div>
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        // Portfolio summary
+                        const summaryDiv = document.createElement('div');
+                        summaryDiv.style.background = 'rgba(76, 175, 80, 0.1)';
+                        summaryDiv.style.borderRadius = '10px';
+                        summaryDiv.style.padding = '15px';
+                        summaryDiv.style.marginBottom = '20px';
+                        summaryDiv.style.border = '1px solid rgba(76, 175, 80, 0.3)';
+                        summaryDiv.innerHTML = `
+                            <div style="color: #4CAF50; font-weight: bold; margin-bottom: 10px;">💼 Portfolio Summary</div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px;">
+                                <div style="text-align: center;">
+                                    <div style="color: #888; font-size: 0.9em;">Total Holdings</div>
+                                    <div style="color: #FFD700; font-size: 1.2em; font-weight: bold;">${result.holdings.length}</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="color: #888; font-size: 0.9em;">Total Value</div>
+                                    <div style="color: #FFD700; font-size: 1.2em; font-weight: bold;">${result.total_value.toFixed(2)} L1</div>
+                                </div>
+                                <div style="text-align: center;">
+                                    <div style="color: #888; font-size: 0.9em;">Total P&L</div>
+                                    <div style="color: ${result.total_pnl >= 0 ? '#4CAF50' : '#f44336'}; font-size: 1.2em; font-weight: bold;">
+                                        ${result.total_pnl >= 0 ? '+' : ''}${result.total_pnl.toFixed(2)} L1
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        portfolioDiv.appendChild(summaryDiv);
+                        
+                        // Individual holdings
+                        result.holdings.forEach(holding => {
+                            const holdingDiv = document.createElement('div');
+                            holdingDiv.className = 'portfolio-item';
+                            const pnl = holding.current_value - holding.average_cost * holding.amount;
+                            const pnlPercent = ((holding.current_value - holding.average_cost * holding.amount) / (holding.average_cost * holding.amount)) * 100;
+                            
+                            holdingDiv.innerHTML = `
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                    <div>
+                                        <div style="color: #FFD700; font-weight: bold; font-size: 1.1em;">${holding.symbol}</div>
+                                        <div style="color: #ccc; font-size: 0.9em;">${holding.name}</div>
+                                    </div>
+                                    <div style="text-align: right;">
+                                        <div style="color: #FFD700; font-weight: bold;">${holding.amount.toLocaleString()} tokens</div>
+                                        <div style="color: #888; font-size: 0.9em;">@ ${holding.current_price.toFixed(6)} L1</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 10px;">
+                                    <div>
+                                        <div style="color: #888; font-size: 0.9em;">Average Cost</div>
+                                        <div style="color: #ccc;">${holding.average_cost.toFixed(6)} L1</div>
+                                    </div>
+                                    <div>
+                                        <div style="color: #888; font-size: 0.9em;">Current Value</div>
+                                        <div style="color: #ccc;">${holding.current_value.toFixed(2)} L1</div>
+                                    </div>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div>
+                                        <span style="color: #888; font-size: 0.9em;">P&L: </span>
+                                        <span class="${pnl >= 0 ? 'pnl-positive' : 'pnl-negative'}" style="font-weight: bold;">
+                                            ${pnl >= 0 ? '+' : ''}${pnl.toFixed(2)} L1 (${pnlPercent >= 0 ? '+' : ''}${pnlPercent.toFixed(1)}%)
+                                        </span>
+                                    </div>
+                                    <div style="display: flex; gap: 5px;">
+                                        <button class="btn btn-buy" onclick="quickTradeFromPortfolio('${holding.symbol}', 'buy')" style="padding: 5px 10px; font-size: 0.8em;">Buy</button>
+                                        <button class="btn btn-sell" onclick="quickTradeFromPortfolio('${holding.symbol}', 'sell')" style="padding: 5px 10px; font-size: 0.8em;">Sell</button>
+                                    </div>
+                                </div>
+                            `;
+                            portfolioDiv.appendChild(holdingDiv);
+                        });
+                        
+                    } catch (error) {
+                        portfolioDiv.innerHTML = `<div style="color: #f44336;">Error loading portfolio: ${error.message}</div>`;
+                    }
+                }
+            </script>
+        </body>
+        </html>

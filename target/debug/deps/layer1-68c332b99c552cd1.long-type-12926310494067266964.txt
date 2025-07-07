@@ -1,0 +1,1 @@
+warp::filter::map::Map<warp::filter::and::And<warp::filter::and::And<warp::filter::and::And<Exact<warp::path::internal::Opaque<&str>>, Exact<warp::path::internal::Opaque<&str>>>, Exact<warp::path::internal::Opaque<&str>>>, impl warp::Filter + warp::filter::FilterBase<Extract = (), Error = Rejection> + Copy>, {closure@src/main.rs:1832:14: 1832:49}>

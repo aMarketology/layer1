@@ -10,3 +10,7 @@ warp = "0.3"
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
 rand = "0.9.0"
+
+# New security dependencies (adding just 3 for now)
+uuid = { version = "1.0", features = ["v4"] }           # For unique transaction IDs                                         # For secure random numbers
+hex = "0.4"      
